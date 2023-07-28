@@ -1,0 +1,10 @@
+body {
+    background-color: black;
+}
+
+.snakePart {
+    background-color: white;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+}
