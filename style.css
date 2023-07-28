@@ -8,3 +8,10 @@ body {
     height: 20px;
     position: absolute;
 }
+
+.Apple {
+    background-color: red;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+}
