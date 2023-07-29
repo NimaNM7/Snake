@@ -4,14 +4,14 @@ body {
 
 .snakePart {
     background-color: white;
-    width: 20px;
-    height: 20px;
+    width: 40px;
+    height: 40px;
     position: absolute;
 }
 
 .Apple {
     background-color: red;
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
     position: absolute;
 }

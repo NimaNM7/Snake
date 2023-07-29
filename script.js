@@ -1,5 +1,8 @@
 let direction = 0;
 let madeApple;
+let PART_SIZE = 40;
+let speed = 100;
+let interval;
 
 //main class
 class snakePart {
@@ -31,10 +34,10 @@ class snakePart {
         part.x = backPart.x;
         part.y = backPart.y;
         if (snakePart.allSnakeParts.length == 1) {
-            if (direction == 0) part.y = backPart.y + 20;
-            else if (direction == 1) part.x = backPart.x - 20;
-            else if (direction == 2) part.y = backPart.y - 20;
-            else if (direction == 3) part.x = backPart.x + 20;
+            if (direction == 0) part.y = backPart.y + PART_SIZE;
+            else if (direction == 1) part.x = backPart.x - PART_SIZE;
+            else if (direction == 2) part.y = backPart.y - PART_SIZE;
+            else if (direction == 3) part.x = backPart.x + PART_SIZE;
         } else {
             part.x = 2 * backPart.x - backPart.getBackPart().x;
             part.y = 2 * backPart.y - backPart.getBackPart().y;
@@ -50,10 +53,10 @@ class snakePart {
     static headMove(part,dir) {
         let xChange = 0;
         let yChange = 0;
-        if (dir == 0) yChange = -20;
-        else if (dir == 1) xChange = 20;
-        else if (dir == 2) yChange = 20;
-        else if (dir == 3) xChange = -20;
+        if (dir == 0) yChange = -1 * PART_SIZE;
+        else if (dir == 1) xChange = PART_SIZE;
+        else if (dir == 2) yChange = PART_SIZE;
+        else if (dir == 3) xChange = -1 * PART_SIZE;
         part.div.remove();
         part.x += xChange;
         part.y += yChange;
@@ -83,8 +86,13 @@ class snakePart {
 
 //methods
 function resetGame() {
+    speed = 100;
+    clearInterval(interval);
+    interval = setInterval(checkGame,speed);
     const bodyChildren = document.querySelectorAll("body > *");
-    Array.from(bodyChildren).forEach((child)=>{ child.remove(); });
+    for (const child of bodyChildren) {
+        child.remove();
+    }
     while (snakePart.allSnakeParts.length != 0) {
         snakePart.allSnakeParts.pop();
     }
@@ -92,7 +100,7 @@ function resetGame() {
 
 function initGame() {
     let headPart = new snakePart();
-    snakePart.allSnakeParts.push(headPart);
+    snakePart.allSnakeParts.push(headPart); 
     makeApple();
 }
 
@@ -122,6 +130,9 @@ function eatApple() {
     madeApple.remove();
     makeApple();
     let addingPart = new snakePart();
+    clearInterval(interval);
+    speed *= 0.92;
+    interval = setInterval(checkGame,speed);
 }
 
 function checkCollision(div1, div2) {
@@ -130,11 +141,10 @@ function checkCollision(div1, div2) {
 
     // Check for overlap
     if (
-      rect1.left < rect2.right &&
-      rect1.right > rect2.left &&
-      rect1.top < rect2.bottom &&
-      rect1.bottom > rect2.top
-    ) {
+      rect1.left + 1 < rect2.right &&
+      rect1.right > rect2.left +1 &&
+      rect1.top + 1 < rect2.bottom &&
+      rect1.bottom > rect2.top + 1) {
         return true;
     }
     return false;
@@ -142,11 +152,8 @@ function checkCollision(div1, div2) {
   
 
 function checkCollisionAll() {
-    for (let i = 0 ; i < snakePart.allSnakeParts.length - 1 ; i++) {
-        for (let j = i+1 ; j < snakePart.allSnakeParts.length ; j++) {
-            if (checkCollision(snakePart.allSnakeParts[i].div,snakePart.allSnakeParts[j].div))
-                return true;
-        }
+    for (let i = 1 ; i < snakePart.allSnakeParts.length ; i++) {
+        if (checkCollision(snakePart.allSnakeParts[0].div,snakePart.allSnakeParts[i].div)) return true;
     }
     return false;
 }
@@ -164,8 +171,6 @@ function checkMargin() {
 //main 
 initGame();
 
-// for (let i = 0 ; i < 10 ; i++) new snakePart();
-
 document.addEventListener("keydown",(event) => {
     if(event.code == 'ArrowUp') direction = 0;
     else if (event.code == 'ArrowRight') direction = 1;
@@ -174,4 +179,4 @@ document.addEventListener("keydown",(event) => {
 })
 
 
-setInterval(checkGame,50);
+interval = setInterval(checkGame,speed);
